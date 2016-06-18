@@ -1,6 +1,6 @@
 ---
 # System Environment settings
-mattermost_version: "3.0.3"
+mattermost_version: "3.1.0"
 mattermost_force_reinstall: no
 mattermost_user: "mattermost"
 mattermost_group: "mattermost"
@@ -82,6 +82,7 @@ mattermost_log_file_format: ""
 mattermost_log_file_location: ""
 
 # Mattermost FileSettings
+mattermost_file_max_file_size: 52428800 # new in mattermost 3.1.0
 mattermost_file_enable_public_link: no
 mattermost_file_public_link_salt: "A705AklYF8MFDOfcwh3I488G8vtLlVip"
 mattermost_file_thumbnail_width: 120
@@ -135,7 +136,7 @@ mattermost_support_terms_of_service_link: "https://about.mattermost.com/default-
 mattermost_support_privacy_policy_link: "https://about.mattermost.com/default-privacy-policy/"
 mattermost_support_about_link: "https://about.mattermost.com/default-about/"
 mattermost_support_help_link: "https://about.mattermost.com/default-help/"
-mattermost_support_report_a_problem_link: "https://about.mattermost.com/default-report-problem/"
+mattermost_support_report_a_problem_link: "https://about.mattermost.com/default-report-a-problem/"
 mattermost_support_support_email: "feedback@mattermost.com"
 
 # Mattermost GitLabSettings
@@ -171,6 +172,7 @@ mattermost_ldap_email_attribute: ""
 mattermost_ldap_username_attribute: ""
 mattermost_ldap_nickname_attribute: ""
 mattermost_ldap_id_attribute: ""
+mattermost_ldap_sync_interval_minutes: 60 # new in mattermost 3.1.0
 mattermost_ldap_skip_certificate_verification: no
 mattermost_ldap_query_timeout: 60
 mattermost_ldap_login_field_name: ""
@@ -178,3 +180,13 @@ mattermost_ldap_login_field_name: ""
 # Mattermost ComplianceSettings
 mattermost_compliance_enable: no
 mattermost_compliance_enable_daily: no
+
+# Mattermost LocalizationSettings
+mattermost_localization_default_server_locale: "en" # new in mattermost 3.1.0
+mattermost_localization_default_client_locale: "en" # new in mattermost 3.1.0
+mattermost_localization_available_locales: # new in mattermost 3.1.0
+  - "en"
+  - "es"
+  - "fr"
+  - "ja"
+  - "pt-BR"

@@ -2,6 +2,9 @@
 - name: generate database dsn
   include_vars: "{{ mattermost_database_type }}.yml"
 
+- name: load mattermost static variables for installed version
+  include_vars: "mattermost-{{ mattermost_version }}.yml"
+
 - name: create configuration directory
   become: yes
   file:
