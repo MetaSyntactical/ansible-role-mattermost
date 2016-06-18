@@ -13,28 +13,27 @@ env:
     - ANSIBLE_VERSION="2.1.0" ROLE_OPTIONS=""
 
 before_install:
-  # Remove the PostgreSQL installed by Travis
   # Prepare environment
   - sudo apt-get update -qq -y
   - echo 'en_US.UTF-8 UTF-8' | sudo tee /var/lib/locales/supported.d/local
 
 install:
   - pip install ansible=="$ANSIBLE_VERSION"
-  - "{ echo '[defaults]'; echo 'roles_path = ../'; echo 'allow_world_readable_tmpfiles = true'; } >> ansible.cfg"
+  - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
 
 before_script:
   - psql -c 'create database mattermost;' -U postgres
 
 script:
   # Check the role/playbook's syntax.
-  - ansible-playbook -i tests/inventory tests/playbook.yml --syntax-check --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
+  - ansible-playbook -i tests/inventory tests/playbook.yml --syntax-check -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i tests/inventory tests/playbook.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
+  - ansible-playbook -i tests/inventory tests/playbook.yml --connection=local -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/inventory tests/playbook.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
+    ansible-playbook -i tests/inventory tests/playbook.yml --connection=local -e "$ROLE_GLOBALS $ROLE_OPTIONS"
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)

@@ -14,7 +14,7 @@ monit_protection: no
 
 # Database Connection parameters
 mattermost_database_type: "postgres"
-mattermost_database_host: "{{ groups['mattermost-database-nodes'][0]|default('localhost') }}"
+mattermost_database_host: "localhost"
 mattermost_database_port: "5432"
 mattermost_database_name: "mattermost"
 mattermost_database_user: "mattermost"
