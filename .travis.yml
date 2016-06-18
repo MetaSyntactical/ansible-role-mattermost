@@ -3,19 +3,17 @@ sudo: required
 language: python
 python: "2.7"
 
+services:
+  - postgresql
+
 env:
   global:
-    - ROLE_GLOBALS="postgresql_shared_buffers=32MB"
+    - ROLE_GLOBALS="mattermost_database_user=postgresql mattermost_database_pass=''"
   matrix:
-    - ROLE_OPTIONS="postgresql_version=9.5" ANSIBLE_VERSION="2.1.0"
+    - ROLE_OPTIONS="ANSIBLE_VERSION=2.1.0"
 
 before_install:
   # Remove the PostgreSQL installed by Travis
-  - sudo apt-get purge pgdg-keyring '^postgresql.*' -y
-  - sudo apt-get autoremove -y -qq
-  - sudo rm -rf /etc/postgresql
-  - sudo rm -rf /var/lib/postgresql
-  - sudo rm -f /etc/apt/sources.list.d/pgdg-source.list
   # Prepare environment
   - sudo apt-get update -qq -y
   - echo 'en_US.UTF-8 UTF-8' | sudo tee /var/lib/locales/supported.d/local
@@ -23,8 +21,9 @@ before_install:
 install:
   - sudo pip install ansible=="$ANSIBLE_VERSION"
   - "{ echo '[defaults]'; echo 'roles_path = ../'; echo 'allow_world_readable_tmpfiles = true'; } >> ansible.cfg"
-  - sudo ansible-galaxy install -p ../ ANXS.postgresql
-  - sudo ansible-playbook -i tests/inventory tests/preparement.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
+
+before_script:
+  - psql -c 'create database mattermost;' -U postgres
 
 script:
   # Check the role/playbook's syntax.
