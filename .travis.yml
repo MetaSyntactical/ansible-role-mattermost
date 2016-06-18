@@ -42,5 +42,6 @@ script:
   # Make sure mattermost is installed and running
   - status mattermost | grep [r]unning
 
-#notifications:
-#  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+notifications:
+  webhooks:
+    - https://galaxy.ansible.com/api/v1/notifications/
