@@ -4,33 +4,45 @@ language: python
 python: "2.7"
 
 env:
-  - "SITE=test.yml"
+  global:
+    - ROLE_GLOBALS="postgresql_shared_buffers=32MB"
+  matrix:
+    - ROLE_OPTIONS="postgresql_version=9.5" ANSIBLE_VERSION="2.1.0"
 
 before_install:
-  - "sudo apt-get update -qq"
+  # Remove the PostgreSQL installed by Travis
+  - sudo apt-get purge pgdg-keyring '^postgresql.*' -y
+  - sudo apt-get autoremove -y -qq
+  - sudo rm -rf /etc/postgresql
+  - sudo rm -rf /var/lib/postgresql
+  - sudo rm -f /etc/apt/sources.list.d/pgdg-source.list
+  # Prepare environment
+  - sudo apt-get update -qq -y
+  - echo 'en_US.UTF-8 UTF-8' | sudo tee /var/lib/locales/supported.d/local
 
 install:
-  - "pip install ansible"
-  - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
-  - "ansible-galaxy install -p ../ ANXS.postgresql"
-  - "ansible-playbook -i tests/inventory tests/preparement.yml --connection=local --sudo"
+  - pip install ansible=="$ANSIBLE_VERSION"
+  - { echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg
+  - ansible-galaxy install -p ../ ANXS.postgresql
+  - ansible-playbook -i tests/inventory tests/preparement.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
 script:
   # Check the role/playbook's syntax.
-  - "ansible-playbook -i tests/inventory tests/$SITE --syntax-check"
+  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
   # Run the role/playbook with ansible-playbook.
-  - "ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo"
+  - ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo
+    ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
   # Make sure mattermost is installed and running
-  - "ps aux | grep mattermost"
+  - ps aux | grep mattermost
+  - netstat -tulpn | grep mattermost
 
 #notifications:
 #  webhooks: https://galaxy.ansible.com/api/v1/notifications/
