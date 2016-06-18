@@ -1,0 +1,169 @@
+{
+    "ServiceSettings": {
+        "ListenAddress": "{{ mattermost_service_listen_ip }}:{{ mattermost_service_listen_port }}",
+        "MaximumLoginAttempts": {{ mattermost_service_maximum_login_attempts|int }},
+        "SegmentDeveloperKey": "",
+        "GoogleDeveloperKey": "",
+        "EnableOAuthServiceProvider": {{ mattermost_service_enable_oauth_service_provider|ternary('true', 'false') }},
+        "EnableIncomingWebhooks": {{ mattermost_service_enable_incoming_webhooks|ternary('true', 'false') }},
+        "EnableOutgoingWebhooks": {{ mattermost_service_enable_outgoing_webhooks|ternary('true', 'false') }},
+        "EnableCommands": {{ mattermost_service_enable_commands|ternary('true', 'false') }},
+        "EnableOnlyAdminIntegrations": {{ mattermost_service_enable_only_admin_integrations|ternary('true', 'false') }},
+        "EnablePostUsernameOverride": {{ mattermost_service_enable_post_username_override|ternary('true', 'false') }},
+        "EnablePostIconOverride":{{ mattermost_service_enable_post_icon_override|ternary('true', 'false') }},
+        "EnableTesting": {{ mattermost_service_enable_testing|ternary('true', 'false') }},
+        "EnableDeveloper": {{ mattermost_service_enable_developer|ternary('true', 'false') }},
+        "EnableSecurityFixAlert": {{ mattermost_service_enable_security_fix_alert|ternary('true', 'false') }},
+        "EnableInsecureOutgoingConnections": {{ mattermost_service_enable_insecure_outgoing_connections|ternary('true', 'false') }},
+        "EnableMultifactorAuthentication":{{ mattermost_service_enable_multifactor_authentication|ternary('true', 'false') }},
+        "AllowCorsFrom": "{{ mattermost_service_allow_cors_from }}",
+        "SessionLengthWebInDays": {{ mattermost_service_session_length_web_in_days|int }},
+        "SessionLengthMobileInDays": {{ mattermost_service_session_length_mobile_in_days|int }},
+        "SessionLengthSSOInDays": {{ mattermost_service_session_length_sso_in_days|int }},
+        "SessionCacheInMinutes": {{ mattermost_service_session_cache_in_minutes|int }},
+        "WebsocketSecurePort": {{ mattermost_service_websocket_secure_port|int }},
+        "WebsocketPort": {{ mattermost_service_websocket_port|int }},
+        "WebserverMode": "{{ mattermost_service_webserver_mode|ternary(mattermost_service_webserver_mode, 'regular') }}"
+    },
+    "TeamSettings": {
+        "SiteName": "{{ mattermost_team_site_name }}",
+        "MaxUsersPerTeam": {{ mattermost_team_max_users_per_team|int }},
+        "EnableTeamCreation": {{ mattermost_team_enable_team_creation|ternary('true', 'false') }},
+        "EnableUserCreation": {{ mattermost_team_enable_user_creation|ternary('true', 'false') }},
+        "EnableOpenServer": {{ mattermost_team_enable_open_server|ternary('true', 'false') }},
+        "RestrictCreationToDomains": "{{ mattermost_team_restrict_creation_to_domains|join(',') }}",
+        "RestrictTeamNames": {{ mattermost_team_restrict_team_names|ternary('true', 'false') }},
+        "EnableCustomBrand": {{ mattermost_team_enable_custom_brand|ternary('true', 'false') }},
+        "CustomBrandText": "{{ mattermost_team_custom_brand_text }}",
+        "RestrictDirectMessage": "{{ mattermost_team_restrict_direct_message|ternary(mattermost_team_restrict_direct_message, 'any') }}"
+    },
+    "SqlSettings": {
+        "DriverName": "{{ mattermost_database_type }}",
+        "DataSource": "{{ mattermost_database_dsn }}",
+        "DataSourceReplicas": [
+{%- for entry in mattermost_database_data_source_replicas %}
+{% set __dsn = _mattermost_database_dsn_format|replace('{database_user}', entry.replica_user) %}
+{% set __dsn = __dsn|replace('{database_pass}', entry.replica_pass) %}
+{% set __dsn = __dsn|replace('{database_host}', entry.replica_host) %}
+{% set __dsn = __dsn|replace('{database_port}', entry.replica_port) %}
+{% set __dsn = __dsn|replace('{database_name}', entry.replica_name) %}
+{% set __dsn = __dsn|replace('{database_ssl}', entry.replica_ssl|default(false)|ternary('enable','disable')) %}
+{% set __dsn = __dsn|replace('{database_connect_timeout}', entry.replica_connect_timeout|default('30')|int) %}
+"{{ __dsn }}"{% if not loop.last %},{% endif %}
+{% endfor -%}
+],
+        "MaxIdleConns": {{ mattermost_database_max_idle_conns|int }},
+        "MaxOpenConns": {{ mattermost_database_max_open_conns|int }},
+        "Trace": {{ mattermost_database_trace|ternary('true', 'false') }},
+        "AtRestEncryptKey": "{{ mattermost_database_at_rest_encrypt_key|ternary(mattermost_database_at_rest_encrypt_key, '7rAh6iwQCkV4cA1Gsg3fgGOXJAQ43QVg') }}"
+    },
+    "LogSettings": {
+        "EnableConsole": {{ mattermost_log_enable_console|ternary('true', 'false') }},
+        "ConsoleLevel": "{{ mattermost_log_console_level }}",
+        "EnableFile": {{ mattermost_log_enable_file|ternary('true', 'false') }},
+        "FileLevel": "{{ mattermost_log_file_level }}",
+        "FileFormat": "{{ mattermost_log_file_format }}",
+        "FileLocation": "{{ mattermost_log_file_location }}"
+    },
+    "FileSettings": {
+        "DriverName": "local",
+        "Directory": "{{ mattermost_storage_dir }}/data/",
+        "EnablePublicLink": {{ mattermost_file_enable_public_link|ternary('true','false') }},
+        "PublicLinkSalt": "{{ mattermost_file_public_link_salt|ternary(mattermost_file_public_link_salt, 'A705AklYF8MFDOfcwh3I488G8vtLlVip') }}",
+        "ThumbnailWidth": {{ mattermost_file_thumbnail_width|int }},
+        "ThumbnailHeight": {{ mattermost_file_thumbnail_height|int }},
+        "PreviewWidth": {{ mattermost_file_preview_width|int }},
+        "PreviewHeight": {{ mattermost_file_preview_height|int }},
+        "ProfileWidth": {{ mattermost_file_profile_width|int }},
+        "ProfileHeight": {{ mattermost_file_profile_height|int }},
+        "InitialFont": "{{ mattermost_file_initial_font }}",
+        "AmazonS3AccessKeyId": "{{ mattermost_file_amazon_s3_access_key_id }}",
+        "AmazonS3SecretAccessKey": "{{ mattermost_file_amazon_s3_secret_access_key }}",
+        "AmazonS3Bucket": "{{ mattermost_file_amazon_s3_bucket }}",
+        "AmazonS3Region": "{{ mattermost_file_amazon_s3_region }}",
+        "AmazonS3Endpoint": "{{ mattermost_file_amazon_s3_endpoint }}",
+        "AmazonS3BucketEndpoint": "{{ mattermost_file_amazon_s3_bucket_endpoint }}",
+        "AmazonS3LocationConstraint": {{ mattermost_file_amazon_s3_location_constraint|ternary('true', 'false') }},
+        "AmazonS3LowercaseBucket": {{ mattermost_file_amazon_s3_lowercase_bucket|ternary('true', 'false') }}
+    },
+    "EmailSettings": {
+        "EnableSignUpWithEmail": {{ mattermost_email_enable_sign_up_with_email|ternary('true', 'false') }},
+        "EnableSignInWithEmail": {{ mattermost_email_enable_sign_in_with_email|ternary('true', 'false') }},
+        "EnableSignInWithUsername": {{ mattermost_email_enable_sign_in_with_username|ternary('true', 'false') }},
+        "SendEmailNotifications": {{ mattermost_email_send_email_notifications|ternary('true', 'false') }},
+        "RequireEmailVerification": {{ mattermost_email_require_email_verification|ternary('true', 'false') }},
+        "FeedbackName": "{{ mattermost_email_feedback_name }}",
+        "FeedbackEmail": "{{ mattermost_email_feedback_email }}",
+        "SMTPUsername": "{{ mattermost_email_smtp_username }}",
+        "SMTPPassword": "{{ mattermost_email_smtp_password }}",
+        "SMTPServer": "{{ mattermost_email_smtp_server }}",
+        "SMTPPort": "{{ mattermost_email_smtp_port }}",
+        "ConnectionSecurity": "{{ mattermost_email_connection_security }}",
+        "InviteSalt": "{{ mattermost_email_invite_salt|ternary(mattermost_email_invite_salt, 'bjlSR4QqkXFBr7TP4oDzlfZmcNuH9YoS') }}",
+        "PasswordResetSalt": "{{ mattermost_email_password_reset_salt|ternary(mattermost_email_password_reset_salt, 'vZ4DcKyVVRlKHHJpexcuXzojkE5PZ5eL') }}",
+        "SendPushNotifications": {{ mattermost_email_send_push_notifications|ternary('true', 'false') }},
+        "PushNotificationServer": "{{ mattermost_email_push_notification_server }}",
+        "PushNotificationContents": "{{ mattermost_email_push_notification_contents }}"
+    },
+    "RateLimitSettings": {
+        "EnableRateLimiter": {{ mattermost_ratelimit_enable_rate_limiter|ternary('true', 'false') }},
+        "PerSec": {{ mattermost_ratelimit_per_sec|int }},
+        "MemoryStoreSize": {{ mattermost_ratelimit_memory_store_size|int }},
+        "VaryByRemoteAddr": {{ mattermost_ratelimit_vary_by_remote_addr|ternary('true', 'false') }},
+        "VaryByHeader": "{{ mattermost_ratelimit_vary_by_header }}"
+    },
+    "PrivacySettings": {
+        "ShowEmailAddress": {{ mattermost_privacy_show_email_address|ternary('true', 'false') }},
+        "ShowFullName": {{ mattermost_privacy_show_full_name|ternary('true', 'false') }}
+    },
+    "SupportSettings": {
+        "TermsOfServiceLink": "{{ mattermost_support_terms_of_service_link }}",
+        "PrivacyPolicyLink": "{{ mattermost_support_privacy_policy_link }}",
+        "AboutLink": "{{ mattermost_support_about_link }}",
+        "HelpLink": "{{ mattermost_support_help_link }}",
+        "ReportAProblemLink": "{{ mattermost_support_report_a_problem_link }}",
+        "SupportEmail": "{{ mattermost_support_support_email }}"
+    },
+    "GitLabSettings": {
+        "Enable": {{ mattermost_gitlab_enable|ternary('true', 'false') }},
+        "Secret": "{{ mattermost_gitlab_secret }}",
+        "Id": "{{ mattermost_gitlab_id }}",
+        "Scope": "{{ mattermost_gitlab_scope }}",
+        "AuthEndpoint": "{{ mattermost_gitlab_auth_endpoint }}",
+        "TokenEndpoint": "{{ mattermost_gitlab_token_endpoint }}",
+        "UserApiEndpoint": "{{ mattermost_gitlab_user_api_endpoint }}"
+    },
+    "GoogleSettings": {
+        "Enable": {{ mattermost_google_enable|ternary('true', 'false') }},
+        "Secret": "{{ mattermost_google_secret }}",
+        "Id": "{{ mattermost_google_id }}",
+        "Scope": "{{ mattermost_google_scope }}",
+        "AuthEndpoint": "{{ mattermost_google_auth_endpoint }}",
+        "TokenEndpoint": "{{ mattermost_google_token_endpoint }}",
+        "UserApiEndpoint": "{{ mattermost_google_user_api_endpoint }}"
+    },
+    "LdapSettings": {
+        "Enable": {{ mattermost_ldap_enable|ternary('true', 'false') }},
+        "LdapServer": "{{ mattermost_ldap_server }}",
+        "LdapPort": {{ mattermost_ldap_port|int }},
+        "ConnectionSecurity": "{{ mattermost_ldap_connection_security }}",
+        "BaseDN": "{{ mattermost_ldap_base_dn }}",
+        "BindUsername": "{{ mattermost_ldap_bind_username }}",
+        "BindPassword": "{{ mattermost_ldap_bind_password }}",
+        "UserFilter": "{{ mattermost_ldap_user_filter }}",
+        "FirstNameAttribute": "{{ mattermost_ldap_first_name_attribute }}",
+        "LastNameAttribute": "{{ mattermost_ldap_last_name_attribute }}",
+        "EmailAttribute": "{{ mattermost_ldap_email_attribute }}",
+        "UsernameAttribute": "{{ mattermost_ldap_username_attribute }}",
+        "NicknameAttribute": "{{ mattermost_ldap_nickname_attribute }}",
+        "IdAttribute": "{{ mattermost_ldap_id_attribute }}",
+        "SkipCertificateVerification": {{ mattermost_ldap_skip_certificate_verification|ternary('true', 'false') }},
+        "QueryTimeout": {{ mattermost_ldap_query_timeout|int }},
+        "LoginFieldName": "{{ mattermost_ldap_login_field_name }}"
+    },
+    "ComplianceSettings": {
+        "Enable": {{ mattermost_compliance_enable|ternary('true', 'false') }},
+        "Directory": "{{ mattermost_storage_dir }}/data/",
+        "EnableDaily": {{ mattermost_compliance_enable_daily|ternary('true', 'false') }}
+    }
+}

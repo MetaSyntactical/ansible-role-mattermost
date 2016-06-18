@@ -1,0 +1,3 @@
+---
+mattermost_database_dsn: "postgres://{{ mattermost_database_user }}:{{ mattermost_database_pass }}@{{ mattermost_database_host }}:{{ mattermost_database_port }}/{{ mattermost_database_name }}?sslmode={{ mattermost_database_ssl|ternary('enable','disable') }}&connect_timeout={{ mattermost_database_connect_timeout }}"
+_mattermost_database_dsn_format: "postgres://{database_user}:{database_pass}@{database_host}:{database_port}/{database_name}?sslmode={database_ssl}&connect_timeout={database_connect_timeout}"

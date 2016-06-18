@@ -1,0 +1,9 @@
+#!upstart
+description "Mattermost Server"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+
+exec start-stop-daemon --start --make-pidfile --pidfile /var/run/mattermost/mattermost.pid --chuid "{{ mattermost_user }}" --chdir "{{ mattermost_install_dir }}" --exec bin/platform >> /var/log/syslog 2>&1

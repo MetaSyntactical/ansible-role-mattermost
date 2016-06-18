@@ -1,0 +1,8 @@
+---
+- include: install-release.yml
+#  when: "{{ not yet installed }}"
+#- include: update-release.yml
+#  when: "[[ already installed and required-version != installed-version }}"
+- include: configure.yml
+- include: monit.yml
+  when: monit_protection

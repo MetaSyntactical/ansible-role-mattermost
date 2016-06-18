@@ -1,0 +1,10 @@
+---
+- name: copy the mattermost monit service file
+  template:
+    src: etc_monit_conf.d_mattermost.j2
+    dest: /etc/monit/conf.d/mattermost
+  register: mattermost_monit_config
+
+- name: restart monit service
+  service: name=monit state=restarted
+  when: mattermost_monit_config.changed

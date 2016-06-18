@@ -1,0 +1,75 @@
+---
+- name: create mattermost group
+  group:
+    name={{ mattermost_group }}
+    system=yes
+    state=present
+
+- name: create mattermost user
+  user:
+    name={{ mattermost_user }}
+    group={{ mattermost_group }}
+    home={{ mattermost_userhome_dir }}
+    system=yes
+    state=present
+
+- name: install required python modules to allow to download release
+  easy_install:
+    name={{ item }}
+    state=present
+  with_items:
+    - urllib3
+    - pyopenssl
+    - ndg-httpsclient
+    - pyasn1
+
+- name: check if mattermost has already been installed
+  stat: path={{ mattermost_install_dir }}
+  register: _mattermost_install_dir
+
+- name: check if mattermost version file exists
+  stat: path={{ mattermost_install_dir }}/.mattermost_version
+  register: _mattermost_version_file
+
+- name: check mattermost version
+  set_fact:
+    _mattermost_installed_version: "{{ lookup('file', mattermost_install_dir + '/.mattermost_version') }}"
+  when: "{{ _mattermost_version_file.stat.exists }}"
+
+- name: download release package to temporary location
+  command: curl -O https://releases.mattermost.com/{{ mattermost_version }}/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
+  args:
+    chdir: /tmp
+  when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
+
+- name: ensure install directory exists
+  file:
+    path={{ mattermost_install_dir }}
+    state=directory
+    owner={{ mattermost_user }}
+    group={{ mattermost_group }}
+  when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
+
+- name: extract release package to final location
+  command: tar -xzf /tmp/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz --strip 1
+  become: "{{ mattermost_user }}"
+  args:
+    chdir: "{{ mattermost_install_dir }}"
+  when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
+
+- name: set ownership to install directory
+  file:
+    name={{ mattermost_install_dir }}
+    state=directory
+    owner={{ mattermost_user }}
+    group={{ mattermost_group }}
+    recurse=yes
+  when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
+
+- name: write installed mattermost version to tracking file
+  copy:
+    dest={{ mattermost_install_dir }}/.mattermost_version
+    content="{{ mattermost_version }}"
+    owner={{ mattermost_user }}
+    group={{ mattermost_group }}
+  when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"

@@ -1,0 +1,7 @@
+check process mattermost with pidfile /var/run/mattermost/mattermost.pid
+  group www
+  group application
+  start program = "/sbin/start mattermost"
+  stop program = "/sbin/stop mattermost"
+  if failed port {{ mattermost_service_listen_port }} protocol HTTP then restart
+  if 5 restarts within 5 cycles then timeout
