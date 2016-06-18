@@ -22,7 +22,7 @@ before_install:
 
 install:
   - pip install ansible=="$ANSIBLE_VERSION"
-  - { echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg
+  - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
   - ansible-galaxy install -p ../ ANXS.postgresql
   - ansible-playbook -i tests/inventory tests/preparement.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
