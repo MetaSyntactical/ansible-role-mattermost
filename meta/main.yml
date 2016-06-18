@@ -1,0 +1,18 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: metasyntactical
+  description: Mattermost installation and configuration.
+  license: "license MIT"
+  min_ansible_version: 2.1.0
+  platforms:
+    - name: Ubuntu
+      versions:
+        - precise
+        - trusty
+  galaxy_tags:
+    - web
+    - networking
+    - cloud
+    - collaboration

@@ -1,8 +1,10 @@
 # Ansible Role: Mattermost
 
-[![Build Status](https://travis-ci.org/metasyntactical/ansible-role-mattermost.svg?branch=master)](https://travis-ci.org/metasyntactical/ansible-role-mattermost)
+[![Build Status](https://travis-ci.org/MetaSyntactical/ansible-role-mattermost.svg?branch=master)](https://travis-ci.org/MetaSyntactical/ansible-role-mattermost)
 
 Installs Mattermost on Ubuntu Linux servers.
+
+## What is Mattermost?
 
 [Mattermost](http://www.mattermost.org/) is an open source, self-hosted Slack-alternative.
 
@@ -13,6 +15,13 @@ anywhere.
 ## Requirements
 
 Mattermost requires either a MySQL or a PostgreSQL Server to connect to.
+
+A suitable Ansible role for installing a PostgreSQL Server as backend may be
+[ANXS.postgresql](https://galaxy.ansible.com/ANXS/postgresql/).
+
+The role requires installed monit if you request to install monit protection
+with variable ```monit_protection: yes ```. A suitable ansible role for
+installing monit may be [ANXS.monit](https://galaxy.ansible.com/ANXS/monit/).
 
 ## Role Variables
 
