@@ -11,7 +11,8 @@ env:
   global:
     - ROLE_GLOBALS="mattermost_database_user=postgresql mattermost_database_pass=''"
   matrix:
-    - ANSIBLE_VERSION="2.1.0" ROLE_OPTIONS=""
+    - ANSIBLE_VERSION="2.1.0" ROLE_OPTIONS="mattermost_version='3.0.3'"
+    - ANSIBLE_VERSION="2.1.0" ROLE_OPTIONS="mattermost_version='3.1.0'"
 
 before_install:
   # Prepare environment

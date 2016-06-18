@@ -1,6 +1,7 @@
 # Ansible Role: Mattermost
 
-[![Build Status](https://travis-ci.org/MetaSyntactical/ansible-role-mattermost.svg?branch=master)](https://travis-ci.org/MetaSyntactical/ansible-role-mattermost)
+[![Build Status master](https://img.shields.io/travis/MetaSyntactical/ansible-role-mattermost.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/MetaSyntactical/ansible-role-mattermost)
+[![GitHub release](https://img.shields.io/github/release/MetaSyntactical/ansible-role-mattermost.svg?maxAge=2592000&style=flat-square)](https://github.com/MetaSyntactical/ansible-role-mattermost/releases/)
 
 Installs Mattermost on Ubuntu Linux servers.
 
