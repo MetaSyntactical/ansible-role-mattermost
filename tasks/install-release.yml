@@ -52,7 +52,6 @@
 
 - name: extract release package to final location
   command: tar -xzf /tmp/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz --strip 1
-#  become: "{{ mattermost_user }}"
   args:
     chdir: "{{ mattermost_install_dir }}"
   when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
