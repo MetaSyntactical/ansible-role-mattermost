@@ -10,7 +10,7 @@ env:
   global:
     - ROLE_GLOBALS="mattermost_database_user=postgresql mattermost_database_pass=''"
   matrix:
-    - ROLE_OPTIONS="ANSIBLE_VERSION=2.1.0"
+    - ANSIBLE_VERSION="2.1.0" ROLE_OPTIONS=""
 
 before_install:
   # Remove the PostgreSQL installed by Travis
