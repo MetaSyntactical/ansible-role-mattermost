@@ -19,7 +19,7 @@ before_install:
   - echo 'en_US.UTF-8 UTF-8' | sudo tee /var/lib/locales/supported.d/local
 
 install:
-  - sudo pip install ansible=="$ANSIBLE_VERSION"
+  - pip install ansible=="$ANSIBLE_VERSION"
   - "{ echo '[defaults]'; echo 'roles_path = ../'; echo 'allow_world_readable_tmpfiles = true'; } >> ansible.cfg"
 
 before_script:
@@ -40,7 +40,7 @@ script:
     || (echo 'Idempotence test: fail' && exit 1)
 
   # Make sure mattermost is installed and running
-  - ps aux | grep mattermost
+  - ps aux | grep [m]attermost
   - netstat -tulpn | grep mattermost
 
 #notifications:
