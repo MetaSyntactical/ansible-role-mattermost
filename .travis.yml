@@ -21,10 +21,10 @@ before_install:
   - echo 'en_US.UTF-8 UTF-8' | sudo tee /var/lib/locales/supported.d/local
 
 install:
-  - pip install ansible=="$ANSIBLE_VERSION"
+  - sudo pip install ansible=="$ANSIBLE_VERSION"
   - "{ echo '[defaults]'; echo 'roles_path = ../'; echo 'allow_world_readable_tmpfiles = true'; } >> ansible.cfg"
-  - ansible-galaxy install -p ../ ANXS.postgresql
-  - ansible-playbook -i tests/inventory tests/preparement.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
+  - sudo ansible-galaxy install -p ../ ANXS.postgresql
+  - sudo ansible-playbook -i tests/inventory tests/preparement.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
 script:
   # Check the role/playbook's syntax.
