@@ -40,6 +40,7 @@
   command: curl -O https://releases.mattermost.com/{{ mattermost_version }}/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
   args:
     chdir: /tmp
+    creates: /tmp/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
   when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
 
 - name: ensure install directory exists
