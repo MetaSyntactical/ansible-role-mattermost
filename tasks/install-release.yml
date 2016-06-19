@@ -37,10 +37,9 @@
   when: "{{ _mattermost_version_file.stat.exists }}"
 
 - name: download release package to temporary location
-  command: curl -O https://releases.mattermost.com/{{ mattermost_version }}/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
-  args:
-    chdir: /tmp
-    creates: /tmp/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
+  get_url:
+    url=https://releases.mattermost.com/{{ mattermost_version }}/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
+    dest=/tmp/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
   when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
 
 - name: ensure install directory exists
@@ -52,9 +51,11 @@
   when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
 
 - name: extract release package to final location
-  command: tar -xzf /tmp/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz --strip 1
-  args:
-    chdir: "{{ mattermost_install_dir }}"
+  unarchive:
+    src=/tmp/mattermost-team-{{ mattermost_version }}-linux-amd64.tar.gz
+    dest={{ mattermost_install_dir }}
+    extra_opts=["--strip=1"]
+    copy=no
   when: "{{ not _mattermost_install_dir.stat.exists or mattermost_force_reinstall or _mattermost_installed_version|default('0.0.0') != mattermost_version }}"
 
 - name: set ownership to install directory
