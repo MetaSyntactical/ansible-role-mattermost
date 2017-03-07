@@ -13,6 +13,13 @@
     system=yes
     state=present
 
+- name: Ensure python-setuptools present to use easy_install
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python-setuptools
+
 - name: install required python modules to allow to download release
   easy_install:
     name={{ item }}
@@ -22,6 +29,7 @@
     - pyopenssl
     - ndg-httpsclient
     - pyasn1
+  become: yes
 
 - name: check if mattermost has already been installed
   stat: path={{ mattermost_install_dir }}/README.md
